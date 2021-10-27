@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="451.0" prefWidth="507.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.AddAppointmentController">
+    <children>
+        <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Appointment Information" AnchorPane.topAnchor="14.0" />
+        <Text layoutX="20.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Appointment ID" />
+        <Text layoutX="20.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" />
+        <Text layoutX="20.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description" />
+        <Text layoutX="20.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location" />
+        <Text layoutX="20.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Contact" />
+        <Text layoutX="20.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Type" />
+        <Text layoutX="20.0" layoutY="270.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start Date &amp;Time" />
+      <Text layoutX="20.0" layoutY="306.0" strokeType="OUTSIDE" strokeWidth="0.0" text="End Date &amp; Time" />
+      <Text layoutX="20.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer ID" />
+      <Text layoutX="21.0" layoutY="377.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User ID" />
+        <TextField fx:id="appointmentIDTextField" editable="false" layoutX="158.0" layoutY="43.0" prefHeight="25.0" prefWidth="200.0" promptText="Auto Gen - Disabled" />
+        <TextField fx:id="titleTextField" layoutX="158.0" layoutY="79.0" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="descriptionTextField" layoutX="158.0" layoutY="113.0" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="locationTextField" layoutX="158.0" layoutY="147.0" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="contactTextField" layoutX="158.0" layoutY="181.0" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="typeTextField" layoutX="158.0" layoutY="215.0" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="startTextField" layoutX="158.0" layoutY="251.0" prefHeight="25.0" prefWidth="200.0" />
+      <TextField fx:id="endTextField" layoutX="158.0" layoutY="290.0" prefHeight="25.0" prefWidth="200.0" />
+      <TextField fx:id="customerIDTextField" layoutX="158.0" layoutY="324.0" prefHeight="25.0" prefWidth="200.0" />
+      <TextField fx:id="userIDTextField" layoutX="158.0" layoutY="360.0" prefHeight="25.0" prefWidth="200.0" />
+      <ButtonBar layoutX="293.0" layoutY="417.0" prefHeight="40.0" prefWidth="200.0">
+        <buttons>
+              <Button fx:id="cancelAppointmentButton" mnemonicParsing="false" onAction="#onCancelAppointment" text="Cancel" />
+              <Button fx:id="saveAppointmentButton" mnemonicParsing="false" onAction="#onSaveAppointment" text="Save" />
+        </buttons>
+      </ButtonBar>
+    </children>
+</AnchorPane>
