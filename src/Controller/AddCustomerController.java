@@ -1,39 +1,87 @@
 package Controller;
 
+import Model.Country;
 import Model.Customer;
+import Model.Division;
+import Utils.CustomerDB;
+import Utils.DivisionDB;
 import Utils.ListProvider;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-
 import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
 
-public class AddCustomerController {
-
+/**
+ * Controller class that provides logic for the Add Customer screen of the application.
+ *
+ * @author Erik Nilson
+ */
+public class AddCustomerController implements Initializable {
     Stage stage;
     Parent scene;
 
-    private ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
+    @FXML
+    public TableView<Customer> customerTable;
 
+    /**
+     * The customer ID text field.
+     */
+    @FXML
     public TextField customerIDTextField;
+
+    /**
+     * The customer name text field.
+     */
+    @FXML
     public TextField customerNameTextField;
+
+    /**
+     * The customer address text field.
+     */
+    @FXML
     public TextField customerAddressTextField;
-    //public ComboBox customerCountryComboBox;
-    //public ComboBox customerStateComboBox;
+
+    @FXML
+    public TextField customerDivisionIDTextField;
+
+    /**
+     * The customer country combobox.
+     */
+    @FXML
+    public ComboBox<Country> customerCountryComboBox;
+
+    /**
+     * The customer division combobox.
+     */
+    @FXML
+    public ComboBox<Division> customerDivisionComboBox;
+
+    /**
+     * The customer postal code text field.
+     */
+    @FXML
     public TextField customerPostalCodeTextField;
+
+    /**
+     * The customer phone text field.
+     */
+    @FXML
     public TextField customerPhoneTextField;
 
+    @FXML
     private Customer customerToAdd;
-    private Object DateTimeParseException;
+
+    public AddCustomerController() throws SQLException {
+    }
 
     /**
      * Saves customer information and returns to the main appointments controller.
@@ -42,57 +90,54 @@ public class AddCustomerController {
      * @return
      */
     @FXML
-    void onSaveCustomer(ActionEvent event) {
-
+    boolean onSaveCustomer(ActionEvent event) throws IOException {
         try {
-            int customerId = 0;
+            int customer_ID = 0;
             for (Customer customer : ListProvider.getAllCustomers()) {
-                if (customer.getCustomerId() > customerId)
-                    customerId = (customer.getCustomerId());
-                customerId = ++customerId;
+                if (customer.getCustomer_ID() > customer_ID)
+                    customer_ID = (customer.getCustomer_ID());
+                customer_ID = ++customer_ID;
             }
 
-            //int customerId = customerToAdd.getCustomerId();
             String customerName = customerNameTextField.getText();
             String address = customerAddressTextField.getText();
-            //ComboBox country = customerCountryComboBox.getText();
-            //ComboBox state = customerStateComboBox.getText();
             String postalCode = customerPostalCodeTextField.getText();
             String phone = customerPhoneTextField.getText();
+            int division_ID = Integer.valueOf(String.valueOf(customerDivisionComboBox.getSelectionModel().getSelectedItem().getDivision_ID()));
 
-            boolean customerAdded = false;
+            if (!customerName.equals("") && !address.equals("") && !postalCode.equals("") && !phone.equals("")) {
+                stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                scene = FXMLLoader.load(getClass().getResource("/View/MainCustomer.fxml"));
+                scene.setStyle(("-fx-font-family: 'serif';"));
+                stage.setScene(new Scene(scene));
+                stage.show();
 
-            if (customerName.isEmpty()) {
-                //displayAlert(1);
+                Customer newCustomerAdded = new Customer(customer_ID, customerName, address, postalCode, phone, division_ID);
+                ListProvider.addCustomer(newCustomerAdded);
+
+                CustomerDB.addCustomer(customer_ID, customerName, address, postalCode, phone, division_ID);
+
             } else {
-
-                try {
-                    Customer newCustomerAdded = new Customer(customerId, customerName, address, postalCode, phone);
-                    ListProvider.addCustomer(newCustomerAdded);
-                    customerAdded = true;
-
-                } catch (Exception e) {
-                    //displayAlert(1);
-                }
-
-                if (customerAdded) {
-                    stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-                    scene = FXMLLoader.load(getClass().getResource("/View/MainCustomer.fxml"));
-                    scene.setStyle(("-fx-font-family: 'serif';"));
-                    stage.setScene(new Scene(scene));
-                    stage.show();
-                }
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                DialogPane dialogPane1 = errorAlert.getDialogPane();
+                dialogPane1.setStyle("-fx-font-family: serif;");
+                errorAlert.setTitle("Missing values");
+                errorAlert.setContentText("Please enter customer name, address, postal code, and phone number.");
+                errorAlert.showAndWait();
             }
-        } catch(Exception e) {
-            //displayAlert(1);
-            }
+            return false;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
     }
-
 
     /**
      * Cancels customer information and returns to the main appointments controller.
      *
      * @param event Cancel button clicked.
+     * @throws IOException
      */
     public void onCancelCustomer(ActionEvent event) throws IOException {
         stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
@@ -100,5 +145,57 @@ public class AddCustomerController {
         scene.setStyle(("-fx-font-family: 'serif';"));
         stage.setScene(new Scene(scene));
         stage.show();
+    }
+
+    /**
+     * Sets the filtered lists in the division combobox.
+     *
+     * @param mouseEvent Country button clicked.
+     * @throws IOException
+     */
+    @FXML
+    void SetDivisionID(MouseEvent mouseEvent) throws IOException, SQLException{
+        if (customerCountryComboBox.getSelectionModel().isEmpty()) {
+            System.out.println(customerCountryComboBox.getSelectionModel().toString());
+            return;
+        }
+
+        // US filter
+        else if (customerCountryComboBox.getSelectionModel().getSelectedItem().getCountryName().equals("U.S")) {
+            try {
+                customerDivisionComboBox.setItems(DivisionDB.getusFilteredDivision());
+            } catch (SQLException exc) {
+                exc.printStackTrace();
+            }
+        }
+
+        // UK filter
+        else if (customerCountryComboBox.getSelectionModel().getSelectedItem().getCountryName().equals("UK")) {
+            try {
+                customerDivisionComboBox.setItems(DivisionDB.getukFilteredDivision());
+
+            } catch (SQLException exc) {
+                exc.printStackTrace();
+            }
+        }
+
+        // Canada filter
+        else if (customerCountryComboBox.getSelectionModel().getSelectedItem().getCountryName().equals("Canada")) {
+            try {
+                customerDivisionComboBox.setItems(DivisionDB.getcanadaFilteredDivision());
+
+            } catch (SQLException exc) {
+                exc.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Initializes the controller.
+     */
+    @FXML
+    public void initialize(URL url, ResourceBundle rb) {
+        customerCountryComboBox.setItems(ListProvider.getAllCountries());
+        customerDivisionComboBox.setItems(ListProvider.getAllDivisions());
     }
 }

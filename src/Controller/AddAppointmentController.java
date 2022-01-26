@@ -1,48 +1,134 @@
 package Controller;
 
 import Model.Appointment;
-import Model.Customer;
+import Model.Contact;
+import Utils.AppointmentDB;
 import Utils.ListProvider;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
-
 import java.io.IOException;
+import java.net.URL;
+import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.ResourceBundle;
 import java.util.TimeZone;
 
-public class AddAppointmentController {
+import static java.lang.Integer.valueOf;
+
+/**
+ * Controller class that provides logic for the Add Appointment screen of the application.
+ *
+ * @author Erik Nilson
+ */
+public class AddAppointmentController implements Initializable{
     Stage stage;
     Parent scene;
 
+    /**
+     * The appointment ID text field.
+     */
+    @FXML
     public TextField appointmentIDTextField;
-    public TextField titleTextField;
-    public TextField descriptionTextField;
-    public TextField locationTextField;
-    public TextField contactTextField;
-    public TextField typeTextField;
-    public TextField startTextField;
-    public TextField endTextField;
-    public TextField customerIDTextField;
-    public TextField userIDTextField;
-
-    private Appointment appointmentToUpdate;
 
     /**
-     * variable are used when converting the users local time to UTC and making sure they are formatted properly
+     * The title text field.
      */
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    @FXML
+    public TextField titleTextField;
+
+    /**
+     * The description text field.
+     */
+    @FXML
+    public TextField descriptionTextField;
+
+    /**
+     * The location text field.
+     */
+    @FXML
+    public TextField locationTextField;
+
+    /**
+     * The type text field.
+     */
+    @FXML
+    public TextField typeTextField;
+
+    /**
+     * The start text field.
+     */
+    @FXML
+    public TextField startTextField;
+
+    /**
+     * The end text field.
+     */
+    @FXML
+    public TextField endTextField;
+
+    /**
+     * The customer ID text field.
+     */
+    @FXML
+    public TextField customerIDTextField;
+
+    /**
+     * The user ID text field.
+     */
+    @FXML
+    public TextField userIDTextField;
+
+    /**
+     * The contact ID text field.
+     */
+    @FXML
+    public TextField contactIDTextField;
+
+    /**
+     * The contact name combobox text field.
+     */
+    @FXML
+    public ComboBox<Contact> contactName;
+
+    /**
+     * The time and date formatter for the timestamp fields
+     */
+    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd' 'HH:mm:ss.S");
+
+    /**
+     * Used to convert local time to UTC
+     */
     Long offsetToUTC = Long.valueOf((ZonedDateTime.now().getOffset()).getTotalSeconds());
 
+    /**
+     * Sets the contact name.
+     *
+     * @param event set contact name combo box clicked.
+     *
+     * @throws IOException
+     */
+    @FXML
+    private void setContactName(ActionEvent event) throws IOException {
+        if (contactName.getSelectionModel().isEmpty()) {
+            return;
+        }
+        else {
+            Contact c = contactName.getSelectionModel().getSelectedItem();
+            contactIDTextField.setText(String.valueOf(c.getContact_ID()));
+        }
+    }
 
     /**
      * Saves appointment information and returns to the main appointments controller.
@@ -50,53 +136,94 @@ public class AddAppointmentController {
      * @param event Save appointment button clicked.
      */
     @FXML
-    public void onSaveAppointment(ActionEvent event) {
+    boolean onSaveAppointment(ActionEvent event) throws IOException {
+        TimeZone EST = TimeZone.getTimeZone("America/New_York");
+        Long offsetToEST = Long.valueOf(EST.getOffset(new Date().getTime()) /1000 /60);
+        LocalDateTime startTime = LocalDateTime.parse(startTextField.getText(), format).minus(Duration.ofSeconds(offsetToUTC));
+        startTime = startTime.plus(Duration.ofMinutes(offsetToEST));
+        LocalDateTime endTime = LocalDateTime.parse(endTextField.getText(), format).minus(Duration.ofSeconds(offsetToUTC));
+        endTime = endTime.plus(Duration.ofMinutes(offsetToEST));
+        LocalTime businessHoursStart = LocalTime.of(8, 00);
+        LocalTime businessHoursEnd = LocalTime.of(22, 00);
+        Timestamp startDateTime = Timestamp.valueOf(startTextField.getText());
+        Timestamp endDateTime = Timestamp.valueOf(endTextField.getText());
+
         try {
-            int appointmentId = 0;
+            if (descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() || typeTextField.getText().isEmpty()
+                    || startTextField.getText().isEmpty() || endTextField.getText().isEmpty() || customerIDTextField.getText().isEmpty()
+                    || userIDTextField.getText().isEmpty() || contactIDTextField.getText().isEmpty()) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                DialogPane dialogPane1 = errorAlert.getDialogPane();
+                dialogPane1.setStyle("-fx-font-family: serif;");
+                errorAlert.setContentText("Please enter missing values.");
+                errorAlert.showAndWait();
+            }
+            // Check for overlapping appointments
             for (Appointment appointment : ListProvider.getAllAppointments()) {
-                if (appointment.getAppointmentId() > appointmentId)
-                    appointmentId = (appointment.getCustomerId());
-                appointmentId = ++appointmentId;
+                if((startDateTime.equals(appointment.getStart()) || startDateTime.after(appointment.getStart()) && startDateTime.before(appointment.getEnd()))) {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    DialogPane dialogPane1 = errorAlert.getDialogPane();
+                    dialogPane1.setStyle("-fx-font-family: serif;");
+                    errorAlert.setContentText("Appointment time already taken, please enter different start and end times.");
+                    errorAlert.showAndWait();
+                    return false;
+                }
             }
 
-            String title = titleTextField.getText();
-            String description = descriptionTextField.getText();
-            String location = locationTextField.getText();
-            String type = typeTextField.getText();
-            LocalDateTime start = LocalDateTime.parse(startTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
-            LocalDateTime end = LocalDateTime.parse(endTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
-            int customerId = appointmentToUpdate.getCustomerId();
-            int userId = appointmentToUpdate.getUserId();
-            int contactId = appointmentToUpdate.getContactId();
+            // Check if appointment is during business hours
+            if (startTime.toLocalTime().isBefore(businessHoursStart) || endTime.toLocalTime().isAfter(businessHoursEnd)) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                DialogPane dialogPane1 = errorAlert.getDialogPane();
+                dialogPane1.setStyle("-fx-font-family: serif;");
+                errorAlert.setContentText("Please enter a time between 08:00 EST and 10:00 EST.");
+                errorAlert.showAndWait();
 
-            boolean appointmentAdded = false;
-
-            try {
-                Appointment newAppointmentAdded = new Appointment(appointmentId, title, description, location, type, /*start, end,*/ customerId, userId, contactId);
-                ListProvider.addAppointment(newAppointmentAdded);
-                appointmentAdded = true;
-
-            } catch (Exception e) {
-                //displayAlert(1);
             }
 
-            if (appointmentAdded) {
+            else if (!titleTextField.equals("") && !appointmentIDTextField.equals("") && !descriptionTextField.equals("") && !locationTextField.equals("")){
+
+                int appointment_ID = 0;
+                for (Appointment appointment : ListProvider.getAllAppointments()) {
+                   if (appointment.getAppointment_ID() > appointment_ID)
+                       appointment_ID = (appointment.getAppointment_ID());
+                   appointment_ID = ++appointment_ID;
+                }
+
+                String title = titleTextField.getText();
+                String description = descriptionTextField.getText();
+                String location = locationTextField.getText();
+                String type = typeTextField.getText();
+                Timestamp start = Timestamp.valueOf(startTextField.getText());
+                Timestamp end = Timestamp.valueOf(endTextField.getText());
+                int user_ID = valueOf(userIDTextField.getText());
+                int contact_ID = valueOf(contactIDTextField.getText());
+                int customer_ID = valueOf(customerIDTextField.getText());
+
                 stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                 scene = FXMLLoader.load(getClass().getResource("/View/MainAppointment.fxml"));
                 scene.setStyle(("-fx-font-family: 'serif';"));
                 stage.setScene(new Scene(scene));
                 stage.show();
+
+                Appointment newAppointmentAdded = new Appointment(appointment_ID, title, description, location, type, start, end, contact_ID, user_ID, customer_ID);
+                ListProvider.addAppointment(newAppointmentAdded);
+
+                return AppointmentDB.addAppointment(appointment_ID, title, description, location, type, start, end, contact_ID, user_ID, customer_ID);
             }
-        } catch(Exception e) {
-            //displayAlert(1);
+
+        } catch (DateTimeParseException | SQLException e) {
+            e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     /**
-     * Cancels appointment information and returns to the main appointments controller.
+     * Cancels appointment add and returns to the main appointments controller.
      *
      * @param event Cancel button clicked.
      */
+    @FXML
     public void onCancelAppointment(ActionEvent event) throws IOException {
         stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/View/MainAppointment.fxml"));
@@ -104,4 +231,14 @@ public class AddAppointmentController {
         stage.setScene(new Scene(scene));
         stage.show();
     }
+
+
+    /**
+     * Initializes the controller.
+     */
+    @FXML
+    public void initialize(URL url, ResourceBundle rb) {
+        contactName.setItems(ListProvider.getAllContacts());
+    }
 }
+

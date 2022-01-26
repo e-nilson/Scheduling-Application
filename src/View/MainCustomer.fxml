@@ -7,18 +7,17 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="410.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainCustomerController">
+<AnchorPane prefHeight="415.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainCustomerController">
     <children>
         <Text layoutX="345.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Manager" />
         <TableView fx:id="customerTable" layoutX="13.0" layoutY="41.0" prefHeight="310.0" prefWidth="769.0">
             <columns>
-                <TableColumn fx:id="customerIdCol" prefWidth="99.0" text="Customer ID" />
-                <TableColumn fx:id="customerNameCol" prefWidth="115.0" text="Customer Name" />
-                <TableColumn fx:id="customerAddressCol" prefWidth="138.0" text="Address" />
-            <TableColumn fx:id="customerCountryCol" prefWidth="98.0" text="Country" />
-            <TableColumn fx:id="customerStateCol" prefWidth="107.0" text="State / Province" />
-                <TableColumn fx:id="customerPostalCol" prefWidth="99.0" text="Postal Code" />
-                <TableColumn fx:id="customerPhoneCol" prefWidth="112.0" text="Phone" />
+                <TableColumn fx:id="customerIDCol" prefWidth="125.0" text="Customer ID" />
+                <TableColumn fx:id="customerNameCol" prefWidth="125.0" text="Customer Name" />
+                <TableColumn fx:id="customerAddressCol" prefWidth="125.0" text="Address" />
+                <TableColumn fx:id="customerDivisionIDCol" prefWidth="125.0" text="Division ID" />
+                <TableColumn fx:id="customerPostalCol" prefWidth="125.0" text="Postal Code" />
+                <TableColumn fx:id="customerPhoneCol" prefWidth="125.0" text="Phone Number" />
             </columns>
         </TableView>
         <ButtonBar layoutY="358.0" prefHeight="40.0" prefWidth="435.0">

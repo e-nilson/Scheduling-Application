@@ -2,12 +2,18 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainController">
    <children>
-      <Button fx:id="appointmentButton" layoutX="98.0" layoutY="175.0" mnemonicParsing="false" onAction="#onAppointmentButton" text="Appointments" />
-      <Button fx:id="customerButton" layoutX="98.0" layoutY="240.0" mnemonicParsing="false" onAction="#onCustomerButton" text="Customers" />
-      <Button fx:id="reportsButton" layoutX="98.0" layoutY="312.0" mnemonicParsing="false" onAction="#onReportsButton" text="Reports" />
-      <Button fx:id="backButton" layoutX="118.0" layoutY="354.0" mnemonicParsing="false" onAction="#onBackButton" text="Back" />
+      <Text layoutX="255.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Main Dashboard" />
+      <Button fx:id="appointmentButton" layoutX="24.0" layoutY="110.0" mnemonicParsing="false" onAction="#onAppointmentButton" prefHeight="50.0" prefWidth="250.0" text="Appointments" />
+      <Button fx:id="customerButton" layoutX="24.0" layoutY="177.0" mnemonicParsing="false" onAction="#onCustomerButton" prefHeight="50.0" prefWidth="250.0" text="Customers" />
+      <Text layoutX="426.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reports" />
+      <Button fx:id="reportByTypeMonth" layoutX="322.0" layoutY="110.0" mnemonicParsing="false" onAction="#onReportByTypeMonth" prefHeight="50.0" prefWidth="250.0" text="Appointments by Month" />
+      <Button fx:id="reportScheduleByContact" layoutX="322.0" layoutY="175.0" mnemonicParsing="false" onAction="#onReportContactSchedule" prefHeight="50.0" prefWidth="250.0" text="Schedule by Contact" />
+      <Button fx:id="reportByCustomer" layoutX="322.0" layoutY="242.0" mnemonicParsing="false" onAction="#onReportCustomerInfo" prefHeight="50.0" prefWidth="250.0" text="Customer Information" />
+      <Button fx:id="backButton" layoutX="534.0" layoutY="361.0" mnemonicParsing="false" onAction="#onBackButton" text="Back" />
+      <Text layoutX="90.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Information" />
    </children>
 </AnchorPane>

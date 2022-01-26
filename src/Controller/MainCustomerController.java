@@ -1,9 +1,10 @@
 package Controller;
 
+import Model.Appointment;
 import Model.Customer;
-
+import Utils.AppointmentDB;
+import Utils.CustomerDB;
 import Utils.ListProvider;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,40 +15,62 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Controller class that provides logic for the Main Customer screen of the application.
+ *
+ * @author Erik Nilson
+ */
 public class MainCustomerController implements Initializable {
-
     Stage stage;
     Parent scene;
 
+    /**
+     * The customer table.
+     */
     @FXML
     public TableView<Customer> customerTable;
 
+    /**
+     * The customer ID column.
+     */
     @FXML
-    public TableColumn<Customer, Integer> customerIdCol;
+    public TableColumn<Customer, Integer> customerIDCol;
 
+    /**
+     * The customer name column.
+     */
     @FXML
     public TableColumn<Customer, String> customerNameCol;
 
+    /**
+     * The customer address column.
+     */
     @FXML
     public TableColumn<Customer, String> customerAddressCol;
 
-    @FXML
-    public TableColumn<Customer, String> customerCountryCol;
-
-    @FXML
-    public TableColumn<Customer, String> customerStateCol;
-
+    /**
+     * The customer postal code column.
+     */
     @FXML
     public TableColumn<Customer, String> customerPostalCol;
 
+    /**
+     * The customer phone column.
+     */
     @FXML
     public TableColumn<Customer, String> customerPhoneCol;
+
+    /**
+     * The customer division ID column.
+     */
+    @FXML
+    private TableColumn<Customer, Integer> customerDivisionIDCol;
 
     private static Customer selectedCustomer;
 
@@ -60,6 +83,7 @@ public class MainCustomerController implements Initializable {
      * @param event Add new customer button clicked.
      * @throws IOException
      */
+    @FXML
     public void onAddCustomerButton(ActionEvent event) throws IOException {
         stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/View/AddCustomer.fxml"));
@@ -69,13 +93,13 @@ public class MainCustomerController implements Initializable {
     }
 
     /**
-     * Loads the modify customer screen.
+     * Loads the update customer screen. If no customer is selected, an error window pops up.
      *
-     * @param event Modify customer button clicked.
+     * @param event Update customer button clicked.
      * @throws IOException
      */
+    @FXML
     public void onUpdateCustomerButton(ActionEvent event) throws IOException {
-
         selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
 
         if (selectedCustomer == null) {
@@ -94,34 +118,50 @@ public class MainCustomerController implements Initializable {
         }
     }
 
-    public void onDeleteCustomerButton(ActionEvent event) {
+    /**
+     * Deletes a customer from the main customer screen. If no customer is selected, an error window pops up.
+     *
+     * @param event Delete customer button clicked
+     * @throws IOException
+     * @throws SQLException
+     */
+    @FXML
+    void onDeleteCustomerButton(ActionEvent event) throws SQLException, IOException {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
 
-        selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-
-        if (selectedCustomer == null){
+        if (selectedCustomer == null) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            DialogPane dialogPane1 = errorAlert.getDialogPane();
-            dialogPane1.setStyle("-fx-font-family: serif;");
+            DialogPane dialogPane = errorAlert.getDialogPane();
+            dialogPane.setStyle("-fx-font-family: serif;");
             errorAlert.setTitle("Error");
-            errorAlert.setContentText("Please select a customer to delete.");
-            Optional<ButtonType> result = errorAlert.showAndWait();
-        }
-        else {
+            errorAlert.setContentText("Please select a customer to delete");
+            Optional<ButtonType> removeOption = errorAlert.showAndWait();
+        } else {
             Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            DialogPane dialogPane1 = confirmationAlert.getDialogPane();
-            dialogPane1.setStyle("-fx-font-family: serif;");
+            DialogPane dialogPane2 = confirmationAlert.getDialogPane();
+            dialogPane2.setStyle("-fx-font-family: serif;");
             confirmationAlert.setTitle("Warning");
-            confirmationAlert.setContentText("Are you sure you want to delete the selected customer?");
+            confirmationAlert.setContentText("Are you sure you want to delete the selected customer and any associated appointments?");
             Optional<ButtonType> removeOption = confirmationAlert.showAndWait();
 
             if (removeOption.isPresent() && removeOption.get() == ButtonType.OK) {
-                    ListProvider.deleteCustomer(selectedCustomer);
+                ObservableList<Appointment> originalAppointments = selectedCustomer.getAllAppointments();
+
+                for (int i = 0; i < originalAppointments.size(); i++) {
+                    if (originalAppointments.get(i).getCustomer_ID() == selectedCustomer.getCustomer_ID()) {
+                        AppointmentDB.deleteAppointment(originalAppointments.get(i).getAppointment_ID());
+                    } else {
+                        CustomerDB.deleteCustomer(selectedCustomer.getCustomer_ID());
+                        ListProvider.deleteCustomer(selectedCustomer);
+                        System.out.println("Customer deleted!");
+                    }
                 }
             }
         }
+    }
 
     /**
-     * Reverts back to the main appointments screen.
+     * Goes back to the main screen.
      *
      * @param event Back button clicked.
      * @throws IOException
@@ -135,15 +175,16 @@ public class MainCustomerController implements Initializable {
         stage.show();
     }
 
+    /**
+     * Initializes the controller.
+     */
     @FXML
     public void initialize(URL url, ResourceBundle rb) {
-
         customerTable.setItems(ListProvider.getAllCustomers());
-        customerIdCol.setCellValueFactory(new PropertyValueFactory<>("Customer_ID"));
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("Customer_ID"));
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("Customer_Name"));
         customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("Address"));
-        //customerCountryCol.setCellValueFactory(new PropertyValueFactory<>("Country"));
-        //customerStateCol.setCellValueFactory(new PropertyValueFactory<>("State"));
+        customerDivisionIDCol.setCellValueFactory(new PropertyValueFactory<>("Division_ID"));
         customerPostalCol.setCellValueFactory(new PropertyValueFactory<>("Postal_Code"));
         customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("Phone"));
     }

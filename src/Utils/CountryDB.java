@@ -1,33 +1,28 @@
 package Utils;
 
-
-import Model.User;
-
+import Model.Country;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Country database.
+ *
+ * @author Erik Nilson
+ */
 public class CountryDB {
 
     public static void select() throws SQLException {
-
-        String sql = "SELECT * FROM users";
-
-        //use connection reference
+        String sql = "SELECT * FROM countries";
         PreparedStatement ps = DBConnection.connection.prepareStatement(sql);
-
-        //returns a result set. executes the qry. holds objects from tables (users in this instance)
         ResultSet rs = ps.executeQuery();
 
-        //rs.next advances through the result set
         while(rs.next()){
-            int userId = rs.getInt("User_ID");
-            String username = rs.getString("User_Name");
-            String password = rs.getString("password");
-            System.out.println(userId + "|" + username + "|" + password);
+            int country_ID = rs.getInt("Country_ID");
+            String country = rs.getString("Country");
+            System.out.println(country_ID + "|" + country);
 
-            ListProvider.addUser(new User(userId, username, password));
+            ListProvider.addCountry(new Country(country_ID, country));
         }
     }
-
 }

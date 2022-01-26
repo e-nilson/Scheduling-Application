@@ -5,26 +5,32 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="413.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainAppointmentController">
+<AnchorPane prefHeight="415.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainAppointmentController">
    <children>
-      <Text layoutX="364.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Appointment Manager" />
-      <RadioButton fx:id="weekRadionButton" layoutX="630.0" layoutY="15.0" mnemonicParsing="false" text="Weekly View" />
-      <RadioButton fx:id="monthRadioButton" layoutX="738.0" layoutY="14.0" mnemonicParsing="false" text="Monthly View" />
-      <TableView fx:id="appointmentTable" layoutX="13.0" layoutY="41.0" prefHeight="310.0" prefWidth="824.0">
+      <Text layoutX="415.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Appointment Manager" />
+      <RadioButton fx:id="monthRadioButton" layoutX="841.0" layoutY="15.0" mnemonicParsing="false" onAction="#onMonthlyAppointments" selected="true" text="Monthly View">
+         <toggleGroup>
+            <ToggleGroup fx:id="appointmentToggle" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="weekRadioButton" layoutX="730.0" layoutY="15.0" mnemonicParsing="false" onAction="#onWeeklyAppointments" selected="true" text="Weekly View" toggleGroup="$appointmentToggle" />
+      <RadioButton fx:id="allAppointmentsRadioButton" layoutX="598.0" layoutY="15.0" mnemonicParsing="false" onAction="#onAllAppointments" selected="true" text="All Appointments" toggleGroup="$appointmentToggle" />
+      <TableView fx:id="appointmentTable" layoutX="13.0" layoutY="41.0" prefHeight="310.0" prefWidth="925.0">
          <columns>
             <TableColumn fx:id="appointmentIdCol" prefWidth="99.0" text="Appointment ID" />
-            <TableColumn fx:id="appointmentTitleCol" prefWidth="57.0" text="Title" />
-            <TableColumn fx:id="appointmentDescriptionCol" prefWidth="95.0" text="Description" />
+            <TableColumn fx:id="appointmentTitleCol" prefWidth="46.0" text="Title" />
+            <TableColumn fx:id="appointmentDescriptionCol" prefWidth="106.0" text="Description" />
             <TableColumn fx:id="appointmentLocationCol" prefWidth="81.0" text="Location" />
-            <TableColumn fx:id="appointmentTypeCol" prefWidth="77.0" text="Type" />
-            <TableColumn fx:id="appointmentStartCol" prefWidth="71.0" text="Start" />
-            <TableColumn fx:id="appointmentEndCol" prefWidth="68.0" text="End" />
-            <TableColumn fx:id="appointmentCustomerIdCol" prefWidth="100.0" text="Customer ID" />
-            <TableColumn fx:id="appointmentUserIdCol" prefWidth="97.0" text="User ID" />
-            <TableColumn fx:id="appointmentContactIdCol" prefWidth="78.0" text="Contact ID" />
+            <TableColumn fx:id="appointmentContactIdCol" prefWidth="68.0" text="Contact ID" />
+            <TableColumn fx:id="appointmentTypeCol" prefWidth="120.0" text="Type" />
+            <TableColumn fx:id="appointmentStartCol" prefWidth="130.0" text="Start" />
+            <TableColumn fx:id="appointmentEndCol" prefWidth="130.0" text="End" />
+            <TableColumn fx:id="appointmentCustomerIdCol" prefWidth="83.0" text="Customer ID" />
+            <TableColumn fx:id="appointmentUserIdCol" prefWidth="61.0" text="User ID" />
          </columns>
       </TableView>
       <ButtonBar layoutY="358.0" prefHeight="40.0" prefWidth="435.0">
@@ -34,7 +40,7 @@
             <Button fx:id="deleteAppointmetButton" mnemonicParsing="false" onAction="#onDeleteAppointmentButton" text="Delete Appointment" />
          </buttons>
       </ButtonBar>
-      <ButtonBar layoutX="479.0" layoutY="358.0" prefHeight="40.0" prefWidth="357.0">
+      <ButtonBar layoutX="730.0" layoutY="358.0" prefHeight="40.0" prefWidth="209.0">
         <buttons>
             <Button fx:id="backButton" mnemonicParsing="false" onAction="#onBackButton" text="Back" />
         </buttons>

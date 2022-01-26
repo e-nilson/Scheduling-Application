@@ -1,46 +1,59 @@
 package Model;
 
+/**
+ * Class for the Country model.
+ *
+ * @author Erik Nilson
+ */
 public class Country {
-    private int countryId;
-    private String country;
+    private int country_ID;
+    private String countryName;
 
-    public Country(int countryId, String country) {
-        this.countryId = countryId;
-        this.country = country;
+    /**
+     * Country constructors.
+     */
+    public Country(int country_ID, String countryName) {
+        this.country_ID = country_ID;
+        this.countryName = countryName;
+    }
+
+    // populate Single parameter country
+    public Country(String country) {
+        this.countryName=country;
     }
 
     /**
      * @return the countryId
      */
-    public int getCountryId() {
-        return countryId;
+    public int getCountry_ID() {
+        return country_ID;
     }
 
     /**
-     * @param countryId the countryId to set
+     * @param country_ID the countryId to set
      */
-    public void setCountryId(int countryId) {
-        this.countryId = countryId;
+    public void setCountry_ID(int country_ID) {
+        this.country_ID = country_ID;
     }
 
     /**
-     * @return the country
+     * @return the country name
      */
-    public String getCountry() {
-        return country;
+    public String getCountryName() {
+        return countryName;
     }
 
     /**
-     * @param country the country to set
+     * @param countryName the country name to set
      */
-    public void setCountry(String country) {
-        this.country = country;
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
     }
 
 
     @Override
     public String toString() {
-        return this.getCountry();
+        return this.getCountryName();
     }
 }
 

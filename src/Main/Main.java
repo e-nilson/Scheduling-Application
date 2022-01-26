@@ -1,25 +1,31 @@
 package Main;
 
-import Utils.AppointmentDB;
-import Utils.CustomerDB;
-import Utils.DBConnection;
-import Utils.UserDB;
+import Utils.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.sql.SQLException;
 
-
+/**
+ * The Scheduling Application is used for the management of appointments and contacts.
+ *
+ * JavaDoc is located in folder the javadoc within the C195 folder. C195/javadoc.
+ *
+ * @author Erik Nilson
+ */
 public class Main extends Application {
 
+    /**
+     * The start method that loads the initial screen.
+     *
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("../view/Login.fxml"));
         root.setStyle("-fx-font-family: 'Serif';");
-        //primaryStage.setTitle("User Login");
         primaryStage.setScene(new Scene(root, 500, 325));
         primaryStage.show();
     }
@@ -28,12 +34,17 @@ public class Main extends Application {
 
         DBConnection.openConnection();
 
-        //reaches to database
-        UserDB.select();
-
-        CustomerDB.select();
-
         AppointmentDB.select();
+
+        ContactDB.select();
+
+        CountryDB.select();
+
+        CustomerDB.getCustomers();
+
+        DivisionDB.select();
+
+        UserDB.select();
 
         launch(args);
 

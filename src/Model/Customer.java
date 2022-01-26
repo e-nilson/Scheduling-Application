@@ -2,128 +2,124 @@ package Model;
 
 import Utils.ListProvider;
 
-import java.time.LocalDateTime;
-
+/**
+ * Class for the Customer model.
+ *
+ * @author Erik Nilson
+ */
 public class Customer extends ListProvider {
-    /*
-    private int customerId; //Auto-gen
-    private String customerName;
+
+    private int customer_ID; //Auto-gen
+    private String customer_Name;
     private String address;
-    //private String country;
-    //private String state;
-    private String postalCode;
+    private String postal_Code;
     private String phone;
-    private int divisionId; //Auto-gen
+    private int division_ID;
 
-    public Customer(int customerId, String customerName, String address, String postalCode, String phone) {
-        this.customerId = customerId;
-        this.customerName = customerName;
-        this.address = address;
-        //this.country = country;
-        //this.state = state;
-        this.postalCode = postalCode;
-        this.phone = phone;
-    }
-
+    /**
+     * Customer constructors.
      */
-
-    private int customerId; //Auto-gen
-    private String customerName;
-    private String address;
-    private String postalCode;
-    private String phone;
-    private LocalDateTime createDate;
-    private String createdBy;
-    private LocalDateTime lastUpdate;
-    private String lastUpdatedBy;
-    private int divisionId;
-
-    public Customer(int customerId, String customerName, String address, String postalCode, String phone/*, LocalDateTime createDate, String createdBy, LocalDateTime lastUpdate, String lastUpdatedBy, int divisionId*/) {
-        this.customerId = customerId;
-        this.customerName = customerName;
+    public Customer(int customer_ID, String customerName, String address, String postalCode, String phone, int divisionID) {
+        this.customer_ID = customer_ID;
+        this.customer_Name = customerName;
         this.address = address;
-        this.postalCode = postalCode;
+        this.postal_Code = postalCode;
         this.phone = phone;
-        this.createDate = createDate;
-        this.createdBy = createdBy;
-        this.lastUpdate = lastUpdate;
-        this.lastUpdatedBy = lastUpdatedBy;
-        this.divisionId = divisionId;
+        this.division_ID = divisionID;
     }
 
-    public int getCustomerId() {
-        return customerId;
-    }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    /*
-    public void setCountry(String country) {
-        this.address = country;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setState(String state) {
-        this.address = state;
-    }
-
-    public String getState() {
-        return state;
-    }
-
+    /**
+     * @return the customer ID
      */
+    public int getCustomer_ID() {
+        return customer_ID;
+    }
 
+    /**
+     * @param customer_ID the customer ID to set
+     */
+    public void setCustomer_ID(int customer_ID) {
+        this.customer_ID = customer_ID;
+    }
+
+    /**
+     * @return the customer name
+     */
+    public String getCustomer_Name() {
+        return customer_Name;
+    }
+
+    /**
+     * @param customer_Name the customer name to set
+     */
+    public void setCustomer_Name(String customer_Name) {
+        this.customer_Name = customer_Name;
+    }
+
+    /**
+     * @return the customer address
+     */
     public String getAddress() {
         return address;
     }
 
+    /**
+     * @param address the customer address to set
+     */
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public String getPostalCode() {
-        return postalCode;
+    /**
+     * @return the customer postal code
+     */
+    public String getPostal_Code() {
+        return postal_Code;
     }
 
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
+    /**
+     * @param postal_Code the customer postal code to set
+     */
+    public void setPostal_Code(String postal_Code) {
+        this.postal_Code = postal_Code;
     }
 
+    /**
+     * @return the customer phone number
+     */
     public String getPhone() {
         return phone;
     }
 
-    public void setphone(String phone) {
+    /**
+     * @param phone the customer phone to set
+     */
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public int getDivisionId() {
-        return divisionId;
+    /**
+     * @return the customer division ID
+     */
+    public int getDivision_ID() {
+        return division_ID;
     }
 
-    public void setDivisionId(int divisionId) {
-        this.divisionId = divisionId;
+    /**
+     * @param division_ID the customer division ID to set
+     */
+    public void setDivision_ID(int division_ID) {
+        this.division_ID = division_ID;
     }
 
-
+    /**
+     * Converts hashmap to string for the country objects.
+     *
+     * Credit to Mark Kinkead combobox webinar.
+     */
     @Override
-    /**Convert hashmap to String for Country objects in combobox (credit to Mr. Kinkead Webinar on Combo Boxes)*/
     public String toString() {
-
-        return ((customerName));
+        return ((customer_Name));
     }
-
 }

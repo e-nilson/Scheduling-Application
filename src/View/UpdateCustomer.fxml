@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
@@ -8,21 +9,21 @@
 <AnchorPane prefHeight="425.0" prefWidth="507.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UpdateCustomerController">
     <children>
         <Text layoutX="34.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Update Customer Information" AnchorPane.topAnchor="38.919921875" />
-        <Text layoutX="34.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer ID" />
-        <Text layoutX="34.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" />
-        <Text layoutX="34.0" layoutY="209.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address" />
-        <Text layoutX="34.0" layoutY="243.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Country" />
-        <Text layoutX="34.0" layoutY="274.0" strokeType="OUTSIDE" strokeWidth="0.0" text="State / Province" />
-        <Text layoutX="34.0" layoutY="311.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Postal Code" />
-      <Text layoutX="34.0" layoutY="347.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number" />
-        <TextField fx:id="customerIDTextField" editable="false" layoutX="171.0" layoutY="120.0" prefHeight="25.0" prefWidth="200.0" promptText="Auto Gen - Disabled" />
-        <TextField fx:id="customerNameTextField" layoutX="171.0" layoutY="156.0" prefHeight="25.0" prefWidth="200.0" />
-        <TextField fx:id="customerAddressTextField" layoutX="171.0" layoutY="190.0" prefHeight="25.0" prefWidth="200.0" />
-        <TextField fx:id="customerCountryTextField" layoutX="171.0" layoutY="224.0" prefHeight="25.0" prefWidth="200.0" />
-        <TextField fx:id="customerStateTextField" layoutX="171.0" layoutY="258.0" prefHeight="25.0" prefWidth="200.0" />
-        <TextField fx:id="customerPostalCodeTextField" layoutX="171.0" layoutY="292.0" prefHeight="25.0" prefWidth="200.0" />
-      <TextField fx:id="customerPhoneTextField" layoutX="171.0" layoutY="328.0" prefHeight="25.0" prefWidth="200.0" />
-        <Button fx:id="saveCustomerButton" layoutX="31.0" layoutY="386.0" mnemonicParsing="false" onAction="#onSaveCustomer" text="Save" />
-        <Button fx:id="cancelCustomerButton" layoutX="123.0" layoutY="386.0" mnemonicParsing="false" onAction="#onCancelCustomer" text="Cancel" />
+        <Text layoutX="34.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer ID" />
+        <Text layoutX="34.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" />
+        <Text layoutX="34.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address" />
+        <Text layoutX="34.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Country" />
+      <Text layoutX="34.0" layoutY="242.0" strokeType="OUTSIDE" strokeWidth="0.0" text="State / Province" />
+        <Text layoutX="34.0" layoutY="278.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Postal Code" />
+        <Text layoutX="34.0" layoutY="314.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number" />
+        <TextField fx:id="customerIDTextField" editable="false" layoutX="171.0" layoutY="86.0" prefHeight="25.0" prefWidth="200.0" promptText="Auto Gen - Disabled" />
+        <TextField fx:id="customerNameTextField" layoutX="171.0" layoutY="122.0" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="customerAddressTextField" layoutX="171.0" layoutY="156.0" prefHeight="25.0" prefWidth="200.0" />
+        <ComboBox fx:id="customerCountryComboBox" layoutX="171.0" layoutY="191.0" onMouseClicked="#setDivisionID" prefHeight="25.0" prefWidth="200.0" />
+      <ComboBox fx:id="customerDivisionComboBox" layoutX="171.0" layoutY="225.0" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="customerPostalCodeTextField" layoutX="171.0" layoutY="259.0" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="customerPhoneTextField" layoutX="171.0" layoutY="295.0" prefHeight="25.0" prefWidth="200.0" />
+        <Button fx:id="saveCustomerButton" layoutX="31.0" layoutY="389.0" mnemonicParsing="false" onAction="#onSaveCustomer" text="Save" />
+        <Button fx:id="cancelCustomerButton" layoutX="123.0" layoutY="389.0" mnemonicParsing="false" onAction="#onCancelCustomer" text="Cancel" />
     </children>
 </AnchorPane>

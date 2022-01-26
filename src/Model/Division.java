@@ -1,28 +1,41 @@
 package Model;
 
+/**
+ * Class for the Division model.
+ *
+ * @author Erik Nilson
+ */
 public class Division {
-    private int divisionId;
+    private int division_ID;
     private String division;
-    private int countryId;
+    private int country_ID;
 
-    public Division(int divisionId, String division, int countryId) {
-        this.divisionId = divisionId;
+    //Constructor for Add Customer combobox
+    public Division(Integer division_ID) {
+        this.division_ID=division_ID;
+    }
+
+    /**
+     * Division constructors.
+     */
+    public Division(int division_ID, String division, int country_ID) {
+        this.division_ID = division_ID;
         this.division = division;
-        this.countryId = countryId;
+        this.country_ID = country_ID;
     }
 
     /**
      * @return the divisionId
      */
-    public int getDivisionId() {
-        return divisionId;
+    public int getDivision_ID() {
+        return division_ID;
     }
 
     /**
-     * @param divisionId the divisionId to set
+     * @param division_ID the divisionId to set
      */
-    public void setDivisionId(int divisionId) {
-        this.divisionId = divisionId;
+    public void setDivision_ID(int division_ID) {
+        this.division_ID = division_ID;
     }
 
     /**
@@ -42,15 +55,19 @@ public class Division {
     /**
      * @return the countryId
      */
-    public int getCountryId() {
-        return countryId;
+    public int getCountry_ID() {
+        return country_ID;
     }
 
     /**
-     * @param countryId the countryId to set
+     * @param country_ID the countryId to set
      */
-    public void setCountryId(int countryId) {
-        this.countryId = countryId;
+    public void setCountry_ID(int country_ID) {
+        this.country_ID = country_ID;
     }
 
+    @Override
+    public String toString() {
+        return division;
+    }
 }
