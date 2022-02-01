@@ -123,11 +123,22 @@ public class LoginController implements Initializable {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        boolean match = false;
+        if (usernameTextField.getText().isEmpty() || passwordTextField.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            DialogPane dialogPane1 = alert.getDialogPane();
+            dialogPane1.setStyle("-fx-font-family: serif;");
+            alert.setTitle(alertTitleText);
+            alert.setHeaderText(alertHeaderText);
+            alert.setContentText(alertContextText);
+            alert.showAndWait();
 
-        for (User u : ListProvider.getAllUsers()) {
-            if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
-                match = true;
+            fileLogInvalid(username);
+        }
+
+        boolean validUser = UserDB.getLoggedInUser(username, password);
+
+        if (validUser) {
+            boolean match = true;
 
                 ListProvider.getAllAppointments();
 
@@ -163,19 +174,19 @@ public class LoginController implements Initializable {
                 stage.show();
 
                 fileLogValid(username);
-
-            } else if (usernameTextField.getText().isEmpty() || passwordTextField.getText().isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                DialogPane dialogPane1 = alert.getDialogPane();
-                dialogPane1.setStyle("-fx-font-family: serif;");
-                alert.setTitle(alertTitleText);
-                alert.setHeaderText(alertHeaderText);
-                alert.setContentText(alertContextText);
-                alert.showAndWait();
-
-                fileLogInvalid(username);
             }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            DialogPane dialogPane1 = alert.getDialogPane();
+            dialogPane1.setStyle("-fx-font-family: serif;");
+            alert.setTitle(alertTitleText);
+            alert.setHeaderText(alertHeaderText);
+            alert.setContentText(alertContextText);
+            alert.showAndWait();
+
+            fileLogInvalid(username);
         }
+        return false;
     }
 
     /**
