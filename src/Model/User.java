@@ -47,7 +47,7 @@ public class User {
     }
 
     /**
-     * Setter for User ID.
+     * Setter for username.
      *
      * @param username to set.
      */
@@ -65,12 +65,16 @@ public class User {
     }
 
     /**
-     * Setter for User ID.
+     * Setter for password.
      *
      * @param password to set.
      */
     public void setPassword(String password) {
         this.password = password;
     }
-}
 
+    @Override
+    public String toString(){
+        return ("Username: " +(username )+ " User ID: " + userId);
+    }
+}
