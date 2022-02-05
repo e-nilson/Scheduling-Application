@@ -1,6 +1,9 @@
 package Utils;
 
+import Model.Appointment;
 import Model.Customer;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.*;
 
@@ -79,5 +82,21 @@ public class CustomerDB {
             System.out.println("SQLException: " + exc.getMessage());
         }
         return false;
+    }
+
+    /**
+     * Finds appointments based on customer id
+     */
+    public static ObservableList<Appointment> getCustAppt(int customer_ID) {
+
+        ObservableList<Appointment> custAppts = FXCollections.observableArrayList();
+        AppointmentDB dBappointments = new AppointmentDB();
+
+        for (Appointment appointments : ListProvider.getAllAppointments()){
+            if (appointments.getCustomer_ID() == customer_ID){
+                custAppts.add(appointments);
+            }
+        }
+        return custAppts;
     }
 }
