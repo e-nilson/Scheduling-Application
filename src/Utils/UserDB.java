@@ -1,6 +1,10 @@
 package Utils;
 
+import Model.Appointment;
 import Model.User;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,5 +29,39 @@ public class UserDB {
 
             ListProvider.addUser(new User(userId, username, password));
         }
+    }
+
+
+    /** This method gets the user based on the User ID. */
+    public static boolean getLoggedInUser(String username, String password) {
+        try {
+            String sql = "SELECT User_Name, Password from users";
+            PreparedStatement ps = DBConnection.connection.prepareStatement(sql);
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                if (resultSet.getString("User_Name").equals(username) && resultSet.getString("Password").equals(password))
+                    return true;
+            }
+            return false;
+
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    /**
+     * Finds appointments based on user id
+     */
+    public static ObservableList<Appointment> getApptsByUser(int userId) {
+        ObservableList<Appointment> userApptResult = FXCollections.observableArrayList();
+        AppointmentDB appointmentDB = new AppointmentDB();
+
+        for (Appointment appointment : ListProvider.getAllAppointments()){
+            if (appointment.getUser_ID() == userId){
+                userApptResult.add(appointment);
+            }
+        }
+        return userApptResult;
     }
 }
