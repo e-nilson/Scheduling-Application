@@ -61,14 +61,14 @@ public class MainController {
     }
 
     /**
-     * Opens the report for contacts schedules controller.
+     * Opens the report for appointments by user controller.
      *
      * @param event Report button clicked.
      * @throws IOException
      */
-    public void onReportContactSchedule(ActionEvent event) throws IOException {
+    public void onReportByLocation(ActionEvent event) throws IOException {
         stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/View/ContactSchedules.fxml"));
+        scene = FXMLLoader.load(getClass().getResource("/View/AppointmentsByUser.fxml"));
         scene.setStyle(("-fx-font-family: 'serif';"));
         stage.setScene(new Scene(scene));
         stage.show();
