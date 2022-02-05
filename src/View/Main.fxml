@@ -12,7 +12,7 @@
       <Text layoutX="426.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reports" />
       <Button fx:id="reportByTypeMonth" layoutX="322.0" layoutY="110.0" mnemonicParsing="false" onAction="#onReportByTypeMonth" prefHeight="50.0" prefWidth="250.0" text="Appointments by Month" />
       <Button fx:id="reportScheduleByContact" layoutX="322.0" layoutY="175.0" mnemonicParsing="false" onAction="#onReportContactSchedule" prefHeight="50.0" prefWidth="250.0" text="Schedule by Contact" />
-      <Button fx:id="reportByCustomer" layoutX="322.0" layoutY="242.0" mnemonicParsing="false" onAction="#onReportCustomerInfo" prefHeight="50.0" prefWidth="250.0" text="Customer Information" />
+      <Button fx:id="reportByLocation" layoutX="322.0" layoutY="242.0" mnemonicParsing="false" onAction="#onReportByLocation" prefHeight="50.0" prefWidth="250.0" text="Appointments by User" />
       <Button fx:id="backButton" layoutX="534.0" layoutY="361.0" mnemonicParsing="false" onAction="#onBackButton" text="Back" />
       <Text layoutX="90.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Information" />
    </children>
