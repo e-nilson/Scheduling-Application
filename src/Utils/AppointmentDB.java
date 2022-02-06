@@ -31,13 +31,15 @@ public class AppointmentDB {
             String type = rs.getString("Type");
             //LocalDateTime start = rs.getTimestamp("Start").toLocalDateTime();
             //LocalDateTime end = rs.getTimestamp("End").toLocalDateTime();
-            Timestamp start = rs.getTimestamp("Start");
-            Timestamp end = rs.getTimestamp("End");
+            //Timestamp start = rs.getTimestamp("Start");
+            //Timestamp end = rs.getTimestamp("End");
+            Timestamp start = TimeConversions.UTCtoLocal(rs.getTimestamp("Start"));
+            Timestamp end = TimeConversions.UTCtoLocal(rs.getTimestamp("End"));
             int customer_ID = rs.getInt("Customer_ID");
             int user_ID = rs.getInt("User_ID");
             int contact_ID = rs.getInt("Contact_ID");
 
-            ListProvider.addAppointment(new Appointment(appointment_ID, title, description, location, type, start, end, customer_ID, user_ID, contact_ID));
+            ListProvider.addAppointment(new Appointment(appointment_ID, title, description, location, type, TimeConversions.localUtc(start), TimeConversions.localUtc(end), customer_ID, user_ID, contact_ID));
         }
     }
 
