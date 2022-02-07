@@ -45,14 +45,21 @@ public class AppointmentDB {
         }
     }
 
-    /**
+   /**
      * Adds appointment information.
      *
      * @throws SQLException
      */
     public static boolean addAppointment(int appointment_ID, String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, int contact_ID, int customer_ID, int user_ID) throws SQLException {
+
+        ZonedDateTime ldtZoned = start.atZone(ZoneId.systemDefault());
+        ZonedDateTime utcStart = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"));
+        ZonedDateTime utcEnd = utcStart.plusHours(1);
+        LocalDateTime startConvert = utcStart.toLocalDateTime();
+        LocalDateTime endConvert = utcEnd.toLocalDateTime();
+
         try {
-            String sql1 = ("INSERT INTO appointments SET Appointment_ID='" + appointment_ID + "',Title='" + title + "',Description='" + description + "', Location='" + location + "', Type='" + type + "', Start='" + start + "', End='" + end + "', Customer_ID='" + customer_ID + "', User_ID='" + user_ID + "', Contact_ID=" + contact_ID);
+            String sql1 = "INSERT INTO appointments SET Appointment_ID='" + appointment_ID + "',Title='" + title + "',Description='" + description + "', Location='" + location + "', Type='" + type + "', Start='" + startConvert + "', End='" + endConvert + "', Customer_ID='" + customer_ID + "', User_ID='" + user_ID + "', Contact_ID=" + contact_ID;
             PreparedStatement ps1 = DBConnection.connection.prepareStatement(sql1);
             ps1.executeUpdate(sql1);
 
@@ -68,8 +75,15 @@ public class AppointmentDB {
      * @throws SQLException
      */
     public static boolean updateAppointment(int appointment_ID, String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, int contact_ID, int user_ID, int customer_ID) throws SQLException {
+        
+        ZonedDateTime ldtZoned = start.atZone(ZoneId.systemDefault());
+        ZonedDateTime utcStart = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"));
+        ZonedDateTime utcEnd = utcStart.plusHours(1);
+        LocalDateTime startConvert = utcStart.toLocalDateTime();
+        LocalDateTime endConvert = utcEnd.toLocalDateTime();
+
         try {
-            String sql2 = "UPDATE appointments SET Title='" + title + "',Description='" + description + "', Location='" + location + "', Type='" + type + "', Start='" + start + "', End='" + end + "', User_ID='" + user_ID + "', Contact_ID='" + contact_ID + "', Customer_ID='" + customer_ID + "' WHERE Appointment_ID =" + appointment_ID;
+            String sql2 = "UPDATE appointments SET Title='" + title + "',Description='" + description + "', Location='" + location + "', Type='" + type + "', Start='" + startConvert + "', End='" + endConvert + "', User_ID='" + user_ID + "', Contact_ID='" + contact_ID + "', Customer_ID='" + customer_ID + "' WHERE Appointment_ID =" + appointment_ID;
             PreparedStatement ps2 = DBConnection.connection.prepareStatement(sql2);
             ps2.executeUpdate(sql2);
 
