@@ -37,10 +37,6 @@ public class AppointmentDB {
             LocalDateTime end = rs.getTimestamp("End").toInstant().atOffset(ZoneOffset.from(ZonedDateTime.now())).toLocalDateTime();
             //LocalDateTime start = rs.getTimestamp("Start").toLocalDateTime();
             //LocalDateTime end = rs.getTimestamp("End").toLocalDateTime();
-            //Timestamp start = rs.getTimestamp("Start");
-            //Timestamp end = rs.getTimestamp("End");
-            //Timestamp start = TimeConv.UTCtoLocal(rs.getTimestamp("Start"));
-            //Timestamp end = TimeConv.UTCtoLocal(rs.getTimestamp("End"));
             int customer_ID = rs.getInt("Customer_ID");
             int user_ID = rs.getInt("User_ID");
             int contact_ID = rs.getInt("Contact_ID");
