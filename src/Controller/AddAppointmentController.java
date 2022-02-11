@@ -139,9 +139,9 @@ public class AddAppointmentController implements Initializable{
     boolean onSaveAppointment(ActionEvent event) throws IOException {
         TimeZone EST = TimeZone.getTimeZone("America/New_York");
         Long offsetToEST = Long.valueOf(EST.getOffset(new Date().getTime()) /1000 /60);
-        LocalDateTime startTime = LocalDateTime.parse(startTextField.getText(), format).minus(Duration.ofSeconds(offsetToUTC));
+        LocalDateTime startTime = LocalDateTime.parse(startTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
         startTime = startTime.plus(Duration.ofMinutes(offsetToEST));
-        LocalDateTime endTime = LocalDateTime.parse(endTextField.getText(), format).minus(Duration.ofSeconds(offsetToUTC));
+        LocalDateTime endTime = LocalDateTime.parse(endTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
         endTime = endTime.plus(Duration.ofMinutes(offsetToEST));
         LocalTime businessHoursStart = LocalTime.of(8, 00);
         LocalTime businessHoursEnd = LocalTime.of(22, 00);
@@ -157,14 +157,13 @@ public class AddAppointmentController implements Initializable{
             String description = descriptionTextField.getText();
             String location = locationTextField.getText();
             String type = typeTextField.getText();
-            Timestamp start = Timestamp.valueOf(startTextField.getText());
-            Timestamp end = Timestamp.valueOf(endTextField.getText());
+            LocalDateTime start = LocalDateTime.parse(startTextField.getText(), formatter);
+            LocalDateTime end = LocalDateTime.parse(endTextField.getText(), formatter);
             int user_ID = valueOf(userIDTextField.getText());
             int contact_ID = valueOf(contactIDTextField.getText());
             int customer_ID = valueOf(customerIDTextField.getText());
 
-            Appointment overlapAppt = AppointmentDB.appointmentOverlap(start, end, customer_ID);
-
+            try {
             // checks for missing values
             if (titleTextField.getText().isEmpty() || descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() || typeTextField.getText().isEmpty()
                     || startTextField.getText().isEmpty() || endTextField.getText().isEmpty() || customerIDTextField.getText().isEmpty()
@@ -175,10 +174,26 @@ public class AddAppointmentController implements Initializable{
                 errorAlert.setTitle("Missing values");
                 errorAlert.setContentText("Please enter missing values.");
                 errorAlert.showAndWait();
+                return false;
             }
 
+                // checks for overlapping appointments
+                for (Appointment appointment : ListProvider.allAppointments) {
+                    if (start.plusMinutes(1).isAfter(appointment.getStart()) && start.isBefore(appointment.getEnd()) ||
+                            end.isAfter(appointment.getStart()) && end.isBefore(appointment.getEnd()) ||
+                            start.isBefore(appointment.getStart()) && end.isAfter(appointment.getStart()))
+                    {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        DialogPane dialogPane1 = errorAlert.getDialogPane();
+                        dialogPane1.setStyle("-fx-font-family: serif;");
+                        errorAlert.setContentText("Appointment time already taken, please enter different start and end times.");
+                        errorAlert.showAndWait();
+                        return false;
+                    }
+                }
+
             // checks if appointment is during business hours
-            else if (startTime.toLocalTime().isBefore(businessHoursStart) || endTime.toLocalTime().isAfter(businessHoursEnd)) {
+            if (startTime.toLocalTime().isBefore(businessHoursStart) || endTime.toLocalTime().isAfter(businessHoursEnd)) {
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                 DialogPane dialogPane1 = errorAlert.getDialogPane();
                 dialogPane1.setStyle("-fx-font-family: serif;");
@@ -186,32 +201,33 @@ public class AddAppointmentController implements Initializable{
                 errorAlert.showAndWait();
             }
 
-            // checks for overlapping appointments
-            else if (overlapAppt != null) {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                DialogPane dialogPane1 = errorAlert.getDialogPane();
-                dialogPane1.setStyle("-fx-font-family: serif;");
-                errorAlert.setContentText("Appointment time already taken, please enter different start and end times.");
-                errorAlert.showAndWait();
+            else {
+                Appointment appointmentAdded = new Appointment(appointment_ID, title, description, location, type, start, end, contact_ID, user_ID, customer_ID);
+                ListProvider.addAppointment(appointmentAdded);
 
-            } else {
+                AppointmentDB.addAppointment(appointment_ID, title, description, location, type, start, end, contact_ID, user_ID, customer_ID);
+
                 stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                 scene = FXMLLoader.load(getClass().getResource("/View/MainAppointment.fxml"));
                 scene.setStyle(("-fx-font-family: 'serif';"));
                 stage.setScene(new Scene(scene));
                 stage.show();
-
-                Appointment newAppointmentAdded = new Appointment(appointment_ID, title, description, location, type, start, end, contact_ID, user_ID, customer_ID);
-                ListProvider.addAppointment(newAppointmentAdded);
-
-                return AppointmentDB.addAppointment(appointment_ID, title, description, location, type, start, end, contact_ID, user_ID, customer_ID);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (DateTimeParseException e) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                DialogPane dialogPane1 = errorAlert.getDialogPane();
+                dialogPane1.setStyle("-fx-font-family: serif;");
+                errorAlert.setContentText("Please ensure all date and time fields are formatted YYYY-MM-DD HH:MM before to updating an appointment");
+                errorAlert.showAndWait();
+                return false;
+            }
             return false;
+
+        } catch (Exception e) {
+        e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     /**
