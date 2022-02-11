@@ -4,6 +4,8 @@ import Model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.time.LocalDateTime;
+
 /**
  * Handles lists used throughout the application.
  *
@@ -51,17 +53,37 @@ public abstract class ListProvider {
     }
 
     /**
+     * Finds appointments based on customer id
+     */
+    public static ObservableList<Appointment> getCustAppt(int customer_ID) {
+
+        ObservableList<Appointment> custAppts = FXCollections.observableArrayList();
+        AppointmentDB dBappointments = new AppointmentDB();
+
+        for (Appointment appointments : ListProvider.getAllAppointments()){
+            if (appointments.getCustomer_ID() == customer_ID){
+                custAppts.add(appointments);
+            }
+        }
+        return custAppts;
+    }
+
+
+    /**
      * Holds all appointment references
      */
-    private static ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
+    public static ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
 
     public static ObservableList<Appointment> getAllAppointments(){
         return allAppointments;
     }
 
-    public static void addAppointment(Appointment appointment) {
-        allAppointments.add(appointment);
+    public static void addAppointment(Appointment addAppointment) {
+        allAppointments.add(addAppointment);
     }
+
+    public static void updateAppointment(Appointment updatedAppointment) {
+        allAppointments.add(updatedAppointment); }
 
     public static boolean deleteAppointment(Appointment selectedAppointment) {
         if (allAppointments.contains(selectedAppointment)) {
@@ -72,15 +94,47 @@ public abstract class ListProvider {
             return false;
         }
     }
+    // Finds appointments based on customer id
+    public static ObservableList<Appointment> getApptsByCustomer(int customer_ID) {
+        ObservableList<Appointment> custAppts = FXCollections.observableArrayList();
+        AppointmentDB dBappointments = new AppointmentDB();
 
-    public static boolean updateAppointment(Appointment selectedAppointment) {
-        if(allAppointments.contains(selectedAppointment)){
-            allAppointments.remove(selectedAppointment);
-            return true;
-        } else {
-            return false;
+        for (Appointment appointments : ListProvider.getAllAppointments()){
+            if (appointments.getCustomer_ID() == customer_ID){
+                custAppts.add(appointments);
+            }
         }
+        return custAppts;
     }
+
+    // Finds appointments based on user id
+    public static ObservableList<Appointment> getApptsByUser(int user_ID) {
+        ObservableList<Appointment> userAppts = FXCollections.observableArrayList();
+        AppointmentDB appointmentDB = new AppointmentDB();
+
+        for (Appointment appointment : ListProvider.getAllAppointments()){
+            if (appointment.getUser_ID() == user_ID){
+                userAppts.add(appointment);
+            }
+        }
+        return userAppts;
+    }
+
+    /**
+     * Finds appointments based on contact id
+     */
+    public static ObservableList<Appointment> getApptsByContact(int contactID) {
+        ObservableList<Appointment> contactApptResult = FXCollections.observableArrayList();
+        AppointmentDB dBappointments = new AppointmentDB();
+
+        for (Appointment appointment : ListProvider.getAllAppointments()){
+            if (appointment.getContact_ID() == contactID){
+                contactApptResult.add(appointment);
+            }
+        }
+        return contactApptResult;
+    }
+
 
     /**
      * Holds all country references
@@ -118,4 +172,5 @@ public abstract class ListProvider {
 
     public static void addContact(Contact contact) {allContacts.add(contact);
     }
+
 }
