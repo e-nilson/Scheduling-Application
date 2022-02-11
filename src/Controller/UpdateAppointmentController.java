@@ -167,25 +167,17 @@ public class UpdateAppointmentController implements Initializable {
         LocalTime businessHoursStart = LocalTime.of(8, 00);
         LocalTime businessHoursEnd = LocalTime.of(22, 00);
 
+        String title = titleTextField.getText();
+        String description = descriptionTextField.getText();
+        String location = locationTextField.getText();
+        String type = typeTextField.getText();
+        LocalDateTime start = LocalDateTime.parse(startTextField.getText(), formatter);
+        LocalDateTime end = LocalDateTime.parse(endTextField.getText(), formatter);
+        int user_ID = valueOf(userIDTextField.getText());
+        int contact_ID = valueOf(contactIDTextField.getText());
+        int customer_ID = valueOf(customerIDTextField.getText());
+
         try {
-            int appointment_ID = 0;
-            for (Appointment appointment : ListProvider.getAllAppointments()) {
-                if (appointment.getAppointment_ID() > appointment_ID)
-                    appointment_ID = (appointment.getAppointment_ID());
-                appointment_ID = ++appointment_ID;
-            }
-            String title = titleTextField.getText();
-            String description = descriptionTextField.getText();
-            String location = locationTextField.getText();
-            String type = typeTextField.getText();
-            Timestamp start = Timestamp.valueOf(startTextField.getText());
-            Timestamp end = Timestamp.valueOf(endTextField.getText());
-            int user_ID = valueOf(userIDTextField.getText());
-            int contact_ID = valueOf(contactIDTextField.getText());
-            int customer_ID = valueOf(customerIDTextField.getText());
-
-            Appointment overlapAppt = AppointmentDB.appointmentOverlap(start, end, customer_ID);
-
             // checks for missing values
             if (titleTextField.getText().isEmpty() || descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() || typeTextField.getText().isEmpty()
                     || startTextField.getText().isEmpty() || endTextField.getText().isEmpty() || customerIDTextField.getText().isEmpty()
@@ -196,6 +188,25 @@ public class UpdateAppointmentController implements Initializable {
                 errorAlert.setTitle("Missing values");
                 errorAlert.setContentText("Please enter missing values.");
                 errorAlert.showAndWait();
+                return false;
+            }
+
+            // checks for overlapping appointments
+            for (Appointment appointment : ListProvider.allAppointments) {
+                if (appointment.getAppointment_ID() == appointmentToUpdate.getAppointment_ID()) {
+                    continue;
+                }
+                if (start.plusMinutes(1).isAfter(appointment.getStart()) && start.isBefore(appointment.getEnd()) ||
+                        end.isAfter(appointment.getStart()) && end.isBefore(appointment.getEnd()) ||
+                        start.isBefore(appointment.getStart()) && end.isAfter(appointment.getStart()))
+                {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    DialogPane dialogPane1 = errorAlert.getDialogPane();
+                    dialogPane1.setStyle("-fx-font-family: serif;");
+                    errorAlert.setContentText("Appointment time already taken, please enter different start and end times.");
+                    errorAlert.showAndWait();
+                    return false;
+                }
             }
 
             // checks if appointment is during business hours
@@ -207,49 +218,7 @@ public class UpdateAppointmentController implements Initializable {
                 errorAlert.showAndWait();
             }
 
-            // checks for overlapping appointments
-            if (overlapAppt != null) {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                DialogPane dialogPane1 = errorAlert.getDialogPane();
-                dialogPane1.setStyle("-fx-font-family: serif;");
-                errorAlert.setContentText("Appointment time already taken, please enter different start and end times.");
-                errorAlert.showAndWait();
-                /*
-                //to check if appointments collide
-
-        for (Appointment apt : DataStorage.getAllAppointments()) {
-            LocalDateTime MS = startDateTime;
-            LocalDateTime ME = endDateTime;
-            LocalDateTime JS = apt.getStartDateNTime();
-            LocalDateTime JE = apt.getEndDateNTime();
-
-            if(apt.getAptId()!= aptId) {
-                if (customerId == apt.getCustomerId()) {
-                    if ((MS.isAfter(JS) || MS.isEqual(JS)) && MS.isBefore(JE)) {
-                        Alert noSelection = new Alert(Alert.AlertType.INFORMATION);
-                        noSelection.setTitle("Appointment collision");
-                        noSelection.setContentText("There is an existing appointment in this time interval!\n" + "Please change times!");
-                        noSelection.showAndWait();
-                        return -1;
-                    } else if (ME.isAfter(JS) && (ME.isBefore(JE) || ME.isEqual(JE))) {
-                        Alert noSelection = new Alert(Alert.AlertType.INFORMATION);
-                        noSelection.setTitle("Appointment collision");
-                        noSelection.setContentText("There is an existing appointment in this time interval!\n" + "Please change times!");
-                        noSelection.showAndWait();
-                        return -1;
-                    } else if ((MS.isBefore(JS) || MS.isEqual(JS)) && (ME.isAfter(JE) || ME.isEqual(JE))) {
-                        Alert noSelection = new Alert(Alert.AlertType.INFORMATION);
-                        noSelection.setTitle("Appointment collision");
-                        noSelection.setContentText("There is an existing appointment in this time interval!\n" + "Please change times!");
-                        noSelection.showAndWait();
-                        return -1;
-                    }
-                }
-            }
-        }
-                 */
-
-            } else {
+            else if (!titleTextField.equals("") && !typeTextField.equals("") && !descriptionTextField.equals("") && !locationTextField.equals("")) {
                 appointmentToUpdate.setTitle(title);
                 appointmentToUpdate.setDescription(description);
                 appointmentToUpdate.setLocation(location);
@@ -260,28 +229,34 @@ public class UpdateAppointmentController implements Initializable {
                 appointmentToUpdate.setContact_ID(contact_ID);
                 appointmentToUpdate.setCustomer_ID(customer_ID);
 
-                stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-                scene = FXMLLoader.load(getClass().getResource("/View/MainAppointment.fxml"));
-                scene.setStyle(("-fx-font-family: 'serif';"));
-                stage.setScene(new Scene(scene));
-                stage.show();
-
                 AppointmentDB.updateAppointment(
                         Integer.valueOf(appointmentIDTextField.getText()),
                         titleTextField.getText(),
                         descriptionTextField.getText(),
                         locationTextField.getText(),
                         typeTextField.getText(),
-                        Timestamp.valueOf(startTextField.getText()),
-                        Timestamp.valueOf(endTextField.getText()),
+                        LocalDateTime.parse(startTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC)),
+                        LocalDateTime.parse(endTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC)),
                         Integer.valueOf(userIDTextField.getText()),
                         Integer.valueOf(contactIDTextField.getText()),
                         Integer.valueOf(customerIDTextField.getText()));
-            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                scene = FXMLLoader.load(getClass().getResource("/View/MainAppointment.fxml"));
+                scene.setStyle(("-fx-font-family: 'serif';"));
+                stage.setScene(new Scene(scene));
+                stage.show();
+            }
+            }
+        catch (DateTimeParseException e) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            DialogPane dialogPane1 = errorAlert.getDialogPane();
+            dialogPane1.setStyle("-fx-font-family: serif;");
+            errorAlert.setContentText("Please ensure all date and time fields are formatted YYYY-MM-DD HH:MM before to updating an appointment");
+            errorAlert.showAndWait();
+            return false;
         }
+        return false;
     }
 
     /**
