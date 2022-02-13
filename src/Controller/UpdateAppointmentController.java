@@ -157,27 +157,27 @@ public class UpdateAppointmentController implements Initializable {
      * @throws SQLException
      */
     @FXML
-    public void onSaveAppointment(ActionEvent event) throws SQLException, IOException {
-        TimeZone EST = TimeZone.getTimeZone("America/New_York");
-        Long offsetToEST = Long.valueOf(EST.getOffset(new Date().getTime()) /1000 /60);
-        LocalDateTime startTime = LocalDateTime.parse(startTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
-        startTime = startTime.plus(Duration.ofMinutes(offsetToEST));
-        LocalDateTime endTime = LocalDateTime.parse(endTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
-        endTime = endTime.plus(Duration.ofMinutes(offsetToEST));
-        LocalTime businessHoursStart = LocalTime.of(8, 00);
-        LocalTime businessHoursEnd = LocalTime.of(22, 00);
-
-        String title = titleTextField.getText();
-        String description = descriptionTextField.getText();
-        String location = locationTextField.getText();
-        String type = typeTextField.getText();
-        LocalDateTime start = LocalDateTime.parse(startTextField.getText(), formatter);
-        LocalDateTime end = LocalDateTime.parse(endTextField.getText(), formatter);
-        int user_ID = valueOf(userIDTextField.getText());
-        int contact_ID = valueOf(contactIDTextField.getText());
-        int customer_ID = valueOf(customerIDTextField.getText());
-
+    boolean onSaveAppointment(ActionEvent event) throws SQLException, IOException {
         try {
+            TimeZone EST = TimeZone.getTimeZone("America/New_York");
+            Long offsetToEST = Long.valueOf(EST.getOffset(new Date().getTime()) /1000 /60);
+            LocalDateTime startTime = LocalDateTime.parse(startTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
+            startTime = startTime.plus(Duration.ofMinutes(offsetToEST));
+            LocalDateTime endTime = LocalDateTime.parse(endTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
+            endTime = endTime.plus(Duration.ofMinutes(offsetToEST));
+            LocalTime businessHoursStart = LocalTime.of(8, 00);
+            LocalTime businessHoursEnd = LocalTime.of(22, 00);
+
+            String title = titleTextField.getText();
+            String description = descriptionTextField.getText();
+            String location = locationTextField.getText();
+            String type = typeTextField.getText();
+            LocalDateTime start = LocalDateTime.parse(startTextField.getText(), formatter);
+            LocalDateTime end = LocalDateTime.parse(endTextField.getText(), formatter);
+            int user_ID = valueOf(userIDTextField.getText());
+            int contact_ID = valueOf(contactIDTextField.getText());
+            int customer_ID = valueOf(customerIDTextField.getText());
+
             // checks for missing values
             if (titleTextField.getText().isEmpty() || descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() || typeTextField.getText().isEmpty()
                     || startTextField.getText().isEmpty() || endTextField.getText().isEmpty() || customerIDTextField.getText().isEmpty()
@@ -247,12 +247,12 @@ public class UpdateAppointmentController implements Initializable {
                 stage.setScene(new Scene(scene));
                 stage.show();
             }
-            }
+        }
         catch (DateTimeParseException e) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             DialogPane dialogPane1 = errorAlert.getDialogPane();
             dialogPane1.setStyle("-fx-font-family: serif;");
-            errorAlert.setContentText("Please ensure all date and time fields are formatted YYYY-MM-DD HH:MM before to updating an appointment");
+            errorAlert.setContentText("Please use the following format for date and time fields YYYY-MM-DD'T'HH:MM");
             errorAlert.showAndWait();
             return false;
         }
