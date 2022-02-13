@@ -3,7 +3,7 @@
 This application is used for managing appointments and contacts for scheduling purposes.
 
 Author: Erik Nilson
-Contact Information: enilson09@gmail.com
+Contact Information: erik.nilson.swe@gmail.com
 Application version: QAM2
 Date: 01/25/2022
 
