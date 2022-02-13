@@ -168,84 +168,92 @@ public class UpdateAppointmentController implements Initializable {
             LocalTime businessHoursStart = LocalTime.of(8, 00);
             LocalTime businessHoursEnd = LocalTime.of(22, 00);
 
-            String title = titleTextField.getText();
-            String description = descriptionTextField.getText();
-            String location = locationTextField.getText();
-            String type = typeTextField.getText();
-            LocalDateTime start = LocalDateTime.parse(startTextField.getText(), formatter);
-            LocalDateTime end = LocalDateTime.parse(endTextField.getText(), formatter);
-            int user_ID = valueOf(userIDTextField.getText());
-            int contact_ID = valueOf(contactIDTextField.getText());
-            int customer_ID = valueOf(customerIDTextField.getText());
+            try{
+                String title = titleTextField.getText();
+                String description = descriptionTextField.getText();
+                String location = locationTextField.getText();
+                String type = typeTextField.getText();
+                LocalDateTime start = LocalDateTime.parse(startTextField.getText(), formatter);
+                LocalDateTime end = LocalDateTime.parse(endTextField.getText(), formatter);
+                int user_ID = valueOf(userIDTextField.getText());
+                int contact_ID = valueOf(contactIDTextField.getText());
+                int customer_ID = valueOf(customerIDTextField.getText());
 
-            // checks for missing values
-            if (titleTextField.getText().isEmpty() || descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() || typeTextField.getText().isEmpty()
-                    || startTextField.getText().isEmpty() || endTextField.getText().isEmpty() || customerIDTextField.getText().isEmpty()
-                    || userIDTextField.getText().isEmpty() || contactIDTextField.getText().isEmpty()) {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                DialogPane dialogPane1 = errorAlert.getDialogPane();
-                dialogPane1.setStyle("-fx-font-family: serif;");
-                errorAlert.setTitle("Missing values");
-                errorAlert.setContentText("Please enter missing values.");
-                errorAlert.showAndWait();
-                return false;
-            }
-
-            // checks for overlapping appointments
-            for (Appointment appointment : ListProvider.allAppointments) {
-                if (appointment.getAppointment_ID() == appointmentToUpdate.getAppointment_ID()) {
-                    continue;
-                }
-                if (start.plusMinutes(1).isAfter(appointment.getStart()) && start.isBefore(appointment.getEnd()) ||
-                        end.isAfter(appointment.getStart()) && end.isBefore(appointment.getEnd()) ||
-                        start.isBefore(appointment.getStart()) && end.isAfter(appointment.getStart()))
-                {
+                // checks for missing values
+                if (titleTextField.getText().isEmpty() || descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() || typeTextField.getText().isEmpty()
+                        || startTextField.getText().isEmpty() || endTextField.getText().isEmpty() || customerIDTextField.getText().isEmpty()
+                        || userIDTextField.getText().isEmpty() || contactIDTextField.getText().isEmpty()) {
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                     DialogPane dialogPane1 = errorAlert.getDialogPane();
                     dialogPane1.setStyle("-fx-font-family: serif;");
-                    errorAlert.setContentText("Appointment time already taken, please enter different start and end times.");
+                    errorAlert.setTitle("Missing values");
+                    errorAlert.setContentText("Please enter missing values.");
                     errorAlert.showAndWait();
                     return false;
                 }
-            }
 
-            // checks if appointment is during business hours
-            if (startTime.toLocalTime().isBefore(businessHoursStart) || endTime.toLocalTime().isAfter(businessHoursEnd)) {
+                // checks for overlapping appointments
+                for (Appointment appointment : ListProvider.allAppointments) {
+                    if (appointment.getAppointment_ID() == appointmentToUpdate.getAppointment_ID()) {
+                        continue;
+                    }
+                    if (start.plusMinutes(1).isAfter(appointment.getStart()) && start.isBefore(appointment.getEnd()) ||
+                            end.isAfter(appointment.getStart()) && end.isBefore(appointment.getEnd()) ||
+                            start.isBefore(appointment.getStart()) && end.isAfter(appointment.getStart()))
+                    {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        DialogPane dialogPane1 = errorAlert.getDialogPane();
+                        dialogPane1.setStyle("-fx-font-family: serif;");
+                        errorAlert.setContentText("Appointment time already taken, please enter different start and end times.");
+                        errorAlert.showAndWait();
+                        return false;
+                    }
+                }
+
+                // checks if appointment is during business hours
+                if (startTime.toLocalTime().isBefore(businessHoursStart) || endTime.toLocalTime().isAfter(businessHoursEnd)) {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    DialogPane dialogPane1 = errorAlert.getDialogPane();
+                    dialogPane1.setStyle("-fx-font-family: serif;");
+                    errorAlert.setContentText("Please enter a time between 08:00 EST and 10:00 EST.");
+                    errorAlert.showAndWait();
+                }
+
+                else if (!titleTextField.equals("") && !typeTextField.equals("") && !descriptionTextField.equals("") && !locationTextField.equals("")) {
+                    appointmentToUpdate.setTitle(title);
+                    appointmentToUpdate.setDescription(description);
+                    appointmentToUpdate.setLocation(location);
+                    appointmentToUpdate.setType(type);
+                    appointmentToUpdate.setStart(start);
+                    appointmentToUpdate.setEnd(end);
+                    appointmentToUpdate.setUser_ID(user_ID);
+                    appointmentToUpdate.setContact_ID(contact_ID);
+                    appointmentToUpdate.setCustomer_ID(customer_ID);
+
+                    AppointmentDB.updateAppointment(
+                            Integer.valueOf(appointmentIDTextField.getText()),
+                            titleTextField.getText(),
+                            descriptionTextField.getText(),
+                            locationTextField.getText(),
+                            typeTextField.getText(),
+                            LocalDateTime.parse(startTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC)),
+                            LocalDateTime.parse(endTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC)),
+                            Integer.valueOf(userIDTextField.getText()),
+                            Integer.valueOf(contactIDTextField.getText()),
+                            Integer.valueOf(customerIDTextField.getText()));
+
+                    stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                    scene = FXMLLoader.load(getClass().getResource("/View/MainAppointment.fxml"));
+                    scene.setStyle(("-fx-font-family: 'serif';"));
+                    stage.setScene(new Scene(scene));
+                    stage.show();
+                }
+            } catch (NumberFormatException e) {
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                 DialogPane dialogPane1 = errorAlert.getDialogPane();
                 dialogPane1.setStyle("-fx-font-family: serif;");
-                errorAlert.setContentText("Please enter a time between 08:00 EST and 10:00 EST.");
+                errorAlert.setContentText("Please enter a valid Customer ID, User ID, or Contact ID.");
                 errorAlert.showAndWait();
-            }
-
-            else if (!titleTextField.equals("") && !typeTextField.equals("") && !descriptionTextField.equals("") && !locationTextField.equals("")) {
-                appointmentToUpdate.setTitle(title);
-                appointmentToUpdate.setDescription(description);
-                appointmentToUpdate.setLocation(location);
-                appointmentToUpdate.setType(type);
-                appointmentToUpdate.setStart(start);
-                appointmentToUpdate.setEnd(end);
-                appointmentToUpdate.setUser_ID(user_ID);
-                appointmentToUpdate.setContact_ID(contact_ID);
-                appointmentToUpdate.setCustomer_ID(customer_ID);
-
-                AppointmentDB.updateAppointment(
-                        Integer.valueOf(appointmentIDTextField.getText()),
-                        titleTextField.getText(),
-                        descriptionTextField.getText(),
-                        locationTextField.getText(),
-                        typeTextField.getText(),
-                        LocalDateTime.parse(startTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC)),
-                        LocalDateTime.parse(endTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC)),
-                        Integer.valueOf(userIDTextField.getText()),
-                        Integer.valueOf(contactIDTextField.getText()),
-                        Integer.valueOf(customerIDTextField.getText()));
-
-                stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-                scene = FXMLLoader.load(getClass().getResource("/View/MainAppointment.fxml"));
-                scene.setStyle(("-fx-font-family: 'serif';"));
-                stage.setScene(new Scene(scene));
-                stage.show();
             }
         }
         catch (DateTimeParseException e) {
