@@ -136,17 +136,17 @@ public class AddAppointmentController implements Initializable{
      * @param event Save appointment button clicked.
      */
     @FXML
-    boolean onSaveAppointment(ActionEvent event) throws IOException {
-        TimeZone EST = TimeZone.getTimeZone("America/New_York");
-        Long offsetToEST = Long.valueOf(EST.getOffset(new Date().getTime()) /1000 /60);
-        LocalDateTime startTime = LocalDateTime.parse(startTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
-        startTime = startTime.plus(Duration.ofMinutes(offsetToEST));
-        LocalDateTime endTime = LocalDateTime.parse(endTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
-        endTime = endTime.plus(Duration.ofMinutes(offsetToEST));
-        LocalTime businessHoursStart = LocalTime.of(8, 00);
-        LocalTime businessHoursEnd = LocalTime.of(22, 00);
-
+    boolean onSaveAppointment(ActionEvent event) throws IOException, SQLException{
         try {
+            TimeZone EST = TimeZone.getTimeZone("America/New_York");
+            Long offsetToEST = Long.valueOf(EST.getOffset(new Date().getTime()) /1000 /60);
+            LocalDateTime startTime = LocalDateTime.parse(startTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
+            startTime = startTime.plus(Duration.ofMinutes(offsetToEST));
+            LocalDateTime endTime = LocalDateTime.parse(endTextField.getText(), formatter).minus(Duration.ofSeconds(offsetToUTC));
+            endTime = endTime.plus(Duration.ofMinutes(offsetToEST));
+            LocalTime businessHoursStart = LocalTime.of(8, 00);
+            LocalTime businessHoursEnd = LocalTime.of(22, 00);
+
             int appointment_ID = 0;
             for (Appointment appointment : ListProvider.getAllAppointments()) {
                 if (appointment.getAppointment_ID() > appointment_ID)
@@ -163,7 +163,6 @@ public class AddAppointmentController implements Initializable{
             int contact_ID = valueOf(contactIDTextField.getText());
             int customer_ID = valueOf(customerIDTextField.getText());
 
-            try {
             // checks for missing values
             if (titleTextField.getText().isEmpty() || descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() || typeTextField.getText().isEmpty()
                     || startTextField.getText().isEmpty() || endTextField.getText().isEmpty() || customerIDTextField.getText().isEmpty()
@@ -215,23 +214,18 @@ public class AddAppointmentController implements Initializable{
             }
 
         } catch (DateTimeParseException e) {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                DialogPane dialogPane1 = errorAlert.getDialogPane();
-                dialogPane1.setStyle("-fx-font-family: serif;");
-                errorAlert.setContentText("Please ensure all date and time fields are formatted YYYY-MM-DD HH:MM before to updating an appointment");
-                errorAlert.showAndWait();
-                return false;
-            }
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            DialogPane dialogPane1 = errorAlert.getDialogPane();
+            dialogPane1.setStyle("-fx-font-family: serif;");
+            errorAlert.setContentText("Please use the following format for date and time fields YYYY-MM-DD'T'HH:MM");
+            errorAlert.showAndWait();
             return false;
-
-        } catch (Exception e) {
-        e.printStackTrace();
         }
         return false;
     }
 
     /**
-     * Cancels appointment add and returns to the main appointments controller.
+     * Cancels the appointment add and returns to the main appointments controller.
      *
      * @param event Cancel button clicked.
      */
@@ -243,7 +237,6 @@ public class AddAppointmentController implements Initializable{
         stage.setScene(new Scene(scene));
         stage.show();
     }
-
 
     /**
      * Initializes the controller.
