@@ -147,34 +147,35 @@ public class AddAppointmentController implements Initializable{
             LocalTime businessHoursStart = LocalTime.of(8, 00);
             LocalTime businessHoursEnd = LocalTime.of(22, 00);
 
-            int appointment_ID = 0;
-            for (Appointment appointment : ListProvider.getAllAppointments()) {
-                if (appointment.getAppointment_ID() > appointment_ID)
-                    appointment_ID = (appointment.getAppointment_ID());
-                appointment_ID = ++appointment_ID;
-            }
-            String title = titleTextField.getText();
-            String description = descriptionTextField.getText();
-            String location = locationTextField.getText();
-            String type = typeTextField.getText();
-            LocalDateTime start = LocalDateTime.parse(startTextField.getText(), formatter);
-            LocalDateTime end = LocalDateTime.parse(endTextField.getText(), formatter);
-            int user_ID = valueOf(userIDTextField.getText());
-            int contact_ID = valueOf(contactIDTextField.getText());
-            int customer_ID = valueOf(customerIDTextField.getText());
+            try {
+                int appointment_ID = 0;
+                for (Appointment appointment : ListProvider.getAllAppointments()) {
+                    if (appointment.getAppointment_ID() > appointment_ID)
+                        appointment_ID = (appointment.getAppointment_ID());
+                    appointment_ID = ++appointment_ID;
+                }
+                String title = titleTextField.getText();
+                String description = descriptionTextField.getText();
+                String location = locationTextField.getText();
+                String type = typeTextField.getText();
+                LocalDateTime start = LocalDateTime.parse(startTextField.getText(), formatter);
+                LocalDateTime end = LocalDateTime.parse(endTextField.getText(), formatter);
+                int user_ID = valueOf(userIDTextField.getText());
+                int contact_ID = valueOf(contactIDTextField.getText());
+                int customer_ID = valueOf(customerIDTextField.getText());
 
-            // checks for missing values
-            if (titleTextField.getText().isEmpty() || descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() || typeTextField.getText().isEmpty()
-                    || startTextField.getText().isEmpty() || endTextField.getText().isEmpty() || customerIDTextField.getText().isEmpty()
-                    || userIDTextField.getText().isEmpty() || contactIDTextField.getText().isEmpty()) {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                DialogPane dialogPane1 = errorAlert.getDialogPane();
-                dialogPane1.setStyle("-fx-font-family: serif;");
-                errorAlert.setTitle("Missing values");
-                errorAlert.setContentText("Please enter missing values.");
-                errorAlert.showAndWait();
-                return false;
-            }
+                // checks for missing values
+                if (titleTextField.getText().isEmpty() || descriptionTextField.getText().isEmpty() || locationTextField.getText().isEmpty() || typeTextField.getText().isEmpty()
+                        || startTextField.getText().isEmpty() || endTextField.getText().isEmpty() || customerIDTextField.getText().isEmpty()
+                        || userIDTextField.getText().isEmpty() || contactIDTextField.getText().isEmpty()) {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    DialogPane dialogPane1 = errorAlert.getDialogPane();
+                    dialogPane1.setStyle("-fx-font-family: serif;");
+                    errorAlert.setTitle("Missing values");
+                    errorAlert.setContentText("Please enter missing values.");
+                    errorAlert.showAndWait();
+                    return false;
+                }
 
                 // checks for overlapping appointments
                 for (Appointment appointment : ListProvider.allAppointments) {
@@ -191,26 +192,34 @@ public class AddAppointmentController implements Initializable{
                     }
                 }
 
-            // checks if appointment is during business hours
-            if (startTime.toLocalTime().isBefore(businessHoursStart) || endTime.toLocalTime().isAfter(businessHoursEnd)) {
+                // checks if appointment is during business hours
+                if (startTime.toLocalTime().isBefore(businessHoursStart) || endTime.toLocalTime().isAfter(businessHoursEnd)) {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    DialogPane dialogPane1 = errorAlert.getDialogPane();
+                    dialogPane1.setStyle("-fx-font-family: serif;");
+                    errorAlert.setContentText("Please enter a time between 08:00 EST and 10:00 EST.");
+                    errorAlert.showAndWait();
+                }
+
+                else {
+                    Appointment appointmentAdded = new Appointment(appointment_ID, title, description, location, type, start, end, contact_ID, user_ID, customer_ID);
+                    ListProvider.addAppointment(appointmentAdded);
+
+                    AppointmentDB.addAppointment(appointment_ID, title, description, location, type, start, end, contact_ID, user_ID, customer_ID);
+
+                    stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                    scene = FXMLLoader.load(getClass().getResource("/View/MainAppointment.fxml"));
+                    scene.setStyle(("-fx-font-family: 'serif';"));
+                    stage.setScene(new Scene(scene));
+                    stage.show();
+                }
+
+            } catch (NumberFormatException e) {
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                 DialogPane dialogPane1 = errorAlert.getDialogPane();
                 dialogPane1.setStyle("-fx-font-family: serif;");
-                errorAlert.setContentText("Please enter a time between 08:00 EST and 10:00 EST.");
+                errorAlert.setContentText("Please enter a valid Customer ID, User ID, or Contact ID.");
                 errorAlert.showAndWait();
-            }
-
-            else {
-                Appointment appointmentAdded = new Appointment(appointment_ID, title, description, location, type, start, end, contact_ID, user_ID, customer_ID);
-                ListProvider.addAppointment(appointmentAdded);
-
-                AppointmentDB.addAppointment(appointment_ID, title, description, location, type, start, end, contact_ID, user_ID, customer_ID);
-
-                stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-                scene = FXMLLoader.load(getClass().getResource("/View/MainAppointment.fxml"));
-                scene.setStyle(("-fx-font-family: 'serif';"));
-                stage.setScene(new Scene(scene));
-                stage.show();
             }
 
         } catch (DateTimeParseException e) {
