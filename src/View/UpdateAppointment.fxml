@@ -15,28 +15,28 @@
         <Text layoutX="20.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description" />
         <Text layoutX="20.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location" />
         <Text layoutX="20.0" layoutY="198.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Type" />
-        <Text layoutX="20.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start Date &amp;Time" />
+        <Text layoutX="20.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start Date &amp; Time" />
         <Text layoutX="20.0" layoutY="270.0" strokeType="OUTSIDE" strokeWidth="0.0" text="End Date &amp; Time" />
         <Text layoutX="20.0" layoutY="305.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer ID" />
         <Text layoutX="21.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User ID" />
-        <Text layoutX="20.0" layoutY="375.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Contact ID" />
-      <Text layoutX="20.0" layoutY="408.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Contact Name" />
+        <Text layoutX="20.0" layoutY="408.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Contact ID" />
         <TextField fx:id="appointmentIDTextField" editable="false" layoutX="158.0" layoutY="43.0" prefHeight="25.0" prefWidth="200.0" promptText="Auto Gen - Disabled" />
         <TextField fx:id="titleTextField" layoutX="158.0" layoutY="79.0" prefHeight="25.0" prefWidth="200.0" />
         <TextField fx:id="descriptionTextField" layoutX="158.0" layoutY="113.0" prefHeight="25.0" prefWidth="200.0" />
         <TextField fx:id="locationTextField" layoutX="158.0" layoutY="147.0" prefHeight="25.0" prefWidth="200.0" />
         <TextField fx:id="typeTextField" layoutX="158.0" layoutY="179.0" prefHeight="25.0" prefWidth="200.0" />
-        <TextField fx:id="startTextField" layoutX="158.0" layoutY="215.0" prefHeight="25.0" prefWidth="200.0" />
-        <TextField fx:id="endTextField" layoutX="158.0" layoutY="254.0" prefHeight="25.0" prefWidth="200.0" />
-        <TextField fx:id="customerIDTextField" editable="false" layoutX="158.0" layoutY="288.0" prefHeight="25.0" prefWidth="200.0" />
-        <TextField fx:id="userIDTextField" layoutX="158.0" layoutY="324.0" prefHeight="25.0" prefWidth="200.0" />
-        <TextField fx:id="contactIDTextField" layoutX="158.0" layoutY="359.0" prefHeight="25.0" prefWidth="200.0" />
-      <ComboBox fx:id="contactName" layoutX="158.0" layoutY="391.0" onAction="#setContactName" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="startTextField" layoutX="158.0" layoutY="215.0" prefHeight="25.0" prefWidth="200.0" promptText="Ex: 2022-03-04T14:00" />
+        <TextField fx:id="endTextField" layoutX="158.0" layoutY="254.0" prefHeight="25.0" prefWidth="200.0" promptText="Ex: 2022-03-04T14:00" />
+        <TextField fx:id="customerIDTextField" editable="false" layoutX="158.0" layoutY="288.0" prefHeight="25.0" prefWidth="200.0" promptText="Ex: 1" />
+        <TextField fx:id="userIDTextField" layoutX="158.0" layoutY="324.0" prefHeight="25.0" prefWidth="200.0" promptText="Ex: 2" />
+        <ComboBox fx:id="contactName" layoutX="158.0" layoutY="360.0" onAction="#setContactName" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="contactIDTextField" disable="true" layoutX="158.0" layoutY="392.0" prefHeight="25.0" prefWidth="200.0" promptText="Ex: 3" />
         <ButtonBar layoutX="293.0" layoutY="417.0" prefHeight="40.0" prefWidth="200.0">
             <buttons>
                 <Button fx:id="cancelAppointmentButton" mnemonicParsing="false" onAction="#onCancelAppointment" text="Cancel" />
                 <Button fx:id="saveAppointmentButton" mnemonicParsing="false" onAction="#onSaveAppointment" text="Save" />
             </buttons>
         </ButtonBar>
+        <Text layoutX="20.0" layoutY="377.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Contact Name" />
     </children>
 </AnchorPane>
