@@ -277,12 +277,13 @@ public class UpdateAppointmentController implements Initializable {
         titleTextField.setText(appointmentToUpdate.getTitle());
         descriptionTextField.setText(appointmentToUpdate.getDescription());
         locationTextField.setText(String.valueOf(appointmentToUpdate.getLocation()));
-        contactIDTextField.setText(String.valueOf(appointmentToUpdate.getContact_ID()));
         typeTextField.setText(appointmentToUpdate.getType());
         startTextField.setText(String.valueOf(appointmentToUpdate.getStart()));
         endTextField.setText(String.valueOf(appointmentToUpdate.getEnd()));
         customerIDTextField.setText(String.valueOf(appointmentToUpdate.getCustomer_ID()));
         userIDTextField.setText(String.valueOf(appointmentToUpdate.getUser_ID()));
+        contactName.setItems(ListProvider.getAllContacts());
+        contactIDTextField.setText(String.valueOf(appointmentToUpdate.getContact_ID()));
     }
 }
 
